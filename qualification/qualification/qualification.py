@@ -68,6 +68,7 @@ def filter_qualified_accounts(qualified_accounts_stats):
                     print("Account: " + account + " removed " + str(bdv) + " bdv")
             accounts_visited.add(account)
     # Filter the qualified accounts dictionary
+    # TODO: Improve the filtering logic
     for account in account_bdv_removed:
         # If the account removed more than 20% of the bdv they deposited
         # Subtract 1 from the nfts qualified count and subtract the bdv removed from the cummulative deposited bdv

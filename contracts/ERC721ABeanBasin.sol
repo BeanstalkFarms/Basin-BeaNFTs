@@ -31,7 +31,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     function initialize(string memory name_, string memory symbol_,address[] calldata addresses_, uint256[] calldata amounts_) initializerERC721A initializer public {
         __ERC721A_init(name_, symbol_);
         __Ownable_init();
-        __adminMintAllInit(addresses_,amounts_);
+        __batchMintAllInit(addresses_,amounts_);
     }
 
     /*
@@ -43,7 +43,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
     /*
-    * @dev adminMintAllInit function used to mint NFT(s) to addresses
+    * @dev __batchMintAllInit function used to mint NFT(s) to addresses
     * @param addresses_ array of addresses to mint to
     * @param amt_ array of amounts to mint to each address
     * This function can only be called on initialization of the contract
@@ -54,7 +54,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     * [ERC2309](https://eips.ethereum.org/EIPS/eip-2309),
     * instead of a sequence of {Transfer} event(s).
     */  
-    function __adminMintAllInit(address[] calldata addresses, uint256[] calldata amount) internal onlyInitializingERC721A{
+    function __batchMintAllInit(address[] calldata addresses, uint256[] calldata amount) internal onlyInitializingERC721A{
         // check that length of addresses == length of amount 
         require(addresses.length == amount.length);
         
@@ -68,6 +68,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
+        // TODO: change to ipfs baseURI
         return 'mybaseURI';
     }
 
@@ -108,6 +109,30 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         for(uint256 i; i < tokenIds.length; ++i){
             tokenUpgraded[tokenIds[i]] = true;
         }
+    }
+
+    function numberMinted(address owner) public view returns (uint256) {
+        return _numberMinted(owner);
+    }
+
+    function totalMinted() public view returns (uint256) {
+        return _totalMinted();
+    }
+
+    function totalBurned() public view returns (uint256) {
+        return _totalBurned();
+    }
+
+    function nextTokenId() public view returns (uint256) {
+        return _nextTokenId();
+    }
+
+    function getAux(address owner) public view returns (uint64) {
+        return _getAux(owner);
+    }
+
+    function setAux(address owner, uint64 aux) public {
+        _setAux(owner, aux);
     }
 }
 
