@@ -1,0 +1,17 @@
+{
+  "name": "basin-beanfts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/hardhat-upgrades": "^2.3.3",
+    "erc721a-upgradeable": "^4.2.3",
+    "hardhat": "^2.18.3"
+  }
+}
