@@ -18,7 +18,7 @@ import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 */
 contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
-    // Mapping to mark token upgrades after 1000 seasons held
+    // Mapping to mark token upgrades after 1000 seasons of deposit holding
     mapping(uint256 => bool) public tokenUpgraded;
 
     /*

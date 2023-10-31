@@ -81,7 +81,11 @@ def filter_qualified_accounts(qualified_accounts_stats):
 qualified_account_stats, add_deposits = construct_account_dict()
 final_dict = filter_qualified_accounts(qualified_account_stats)
 
+total_nfts = 0
 for account in final_dict:
+    total_nfts += final_dict[account][0]
     if final_dict[account][0] > 0:
         print(account + " qualified for " + str(final_dict[account][0]) + " nfts with " + str(final_dict[account][1]) + " bdv deposited")
+print("Total nfts: " + str(total_nfts))
+
 
