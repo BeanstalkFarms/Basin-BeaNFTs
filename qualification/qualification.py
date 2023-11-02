@@ -82,13 +82,20 @@ def filter_qualified_accounts(qualified_accounts_stats):
 qualified_account_stats, add_deposits = construct_account_dict()
 # final_dict = filter_qualified_accounts(qualified_account_stats)
 
-# total_nfts = 0
-# for account in final_dict:
-#     total_nfts += final_dict[account][0]
-#     if final_dict[account][0] > 0:
-#         print(account + " qualified for " + str(final_dict[account][0]) + " nfts with " + str(final_dict[account][1]) + " bdv deposited")
-# print("Total nfts: " + str(total_nfts))
-print("Account  |  NFTs Qualified  |  Cummulative Deposited BDV  |  Individual Deposited BDV")
-pprint(qualified_account_stats)
+def get_total_nfts(qualified_account_stats):
+    total_nfts = 0
+    for account in qualified_account_stats:
+        total_nfts += qualified_account_stats[account][0]
+    return total_nfts
+
+def extract_to_csv(qualified_account_stats):
+    # export qualified_account_stats to csv file
+    with open('qualified-accounts.csv', 'w') as file:
+        file.write("Account,NFTs Qualified,First Deposit Season,Cummulative Deposited BDV,Individual Deposited BDV\n")
+        for account in qualified_account_stats:
+            file.write(account + "," + str(qualified_account_stats[account][0]) + "," + str(qualified_account_stats[account][1]) + "," + str(qualified_account_stats[account][2]) + "," + str(qualified_account_stats[account][3]) + "\n")
+
+# print("Account  | NFTs Qualified  |  First Deposit Season  |  Cummulative Deposited BDV  |  Individual Deposited BDV")
+# pprint(qualified_account_stats)
 
 
