@@ -14,7 +14,8 @@ def construct_account_dict():
     add_deposits = data["data"]["addDeposits"]
 
     # Initialize an empty dictionary
-    # Each entry is of type: {account: [deposit_count, first_deposit_season, cummulative_deposited_bdv, [individual_deposited_bdv]]}
+    # Each entry is of type: 
+    # {account: [deposit_count, first_deposit_season, cummulative_deposited_bdv, [individual_deposited_bdv]]}
     qualified_accounts_stats = {}
 
     # Iterate through the entries in the "addDeposits" list and populate the dictionary
@@ -30,7 +31,7 @@ def construct_account_dict():
     return qualified_accounts_stats, add_deposits
 
 # Runs the graphql query against the beanstalk subgraph
-def run_query(query):
+def run_graph_query(query):
     # endpoint where you are making the request
     url = 'https://graph.node.bean.money/subgraphs/name/beanstalk'
     request = requests.post(url, '', json={'query': query})
@@ -57,7 +58,7 @@ def filter_qualified_accounts(qualified_accounts_stats):
             season_start = entry["season"]
             season_end = season_start + 600
             query = '{ removeDeposits( where: {account: ' + account + ', token_contains: "0xbea0e11282e2bb5893bece110cf199501e872bad", season_gte: ' + str(season_start) + ', season_lte: ' + str(season_end) + ' }) {blockNumber hash season account amount token bdv}}'
-            result = run_query(query)
+            result = run_graph_query(query)
             # Remove the quotes from the account string
             account = account[1:-1]
             print(account)
@@ -80,22 +81,33 @@ def filter_qualified_accounts(qualified_accounts_stats):
             qualified_accounts_stats[account][2] -= account_bdv_removed[account] 
     return qualified_accounts_stats
 
-def addressHasBeaNFTs(wallet_address):
+# Checks if the account has beaNFTs
+def address_has_beaNFTs(wallet_address):
     for collection in previous_beaNFT_collections:
         url = f"https://eth-mainnet.g.alchemy.com/nft/v2/{ALCHEMY_API_KEY}/isHolderOfCollection?wallet={wallet_address}&contractAddress={collection}"
         headers = {"accept": "application/json"}
         response = requests.get(url, headers=headers)
         isHolder = response.json()["isHolderOfCollection"]
-        return isHolder
+    return isHolder
 
-def get_total_nfts(qualified_account_stats):
+def get_address_beanft_count(wallet_address):
+    count = 0
+    for collection in previous_beaNFT_collections:
+        url = f"https://eth-mainnet.g.alchemy.com/nft/v2/{ALCHEMY_API_KEY}/getNFTs?owner={wallet_address}&contractAddresses[]={collection}&withMetadata=false&pageSize=100"
+        headers = {"accept": "application/json"}
+        response = requests.get(url, headers=headers)
+        count += int(response.json()["totalCount"])
+    return count
+
+# Returns the total number of nfts to be minted
+def get_total_nfts_to_be_minted(qualified_account_stats):
     total_nfts = 0
     for account in qualified_account_stats:
         total_nfts += qualified_account_stats[account][0]
     return total_nfts
 
+# Export all qualified account stats to csv file for rarity score calculation
 def extract_to_csv(qualified_account_stats):
-    # export qualified_account_stats to csv file
     with open('qualified-accounts.csv', 'w') as file:
         file.write("Account,NFTs Qualified,First Deposit Season,Cummulative Deposited BDV,Individual Deposited BDV\n")
         for account in qualified_account_stats:
@@ -105,14 +117,15 @@ def extract_to_csv(qualified_account_stats):
                                 # Genesis                                      # Winter                                       # Barn Raise
 previous_beaNFT_collections = ["0xa755A670Aaf1FeCeF2bea56115E65e03F7722A79", "0x459895483556daD32526eFa461F75E33E458d9E9" , "0xa969BB19b1d35582Ded7EA869cEcD60A3Bd5D1E8" ]
 
-
 if __name__ == "__main__":
     load_dotenv()
     ALCHEMY_API_KEY = os.getenv('ALCHEMY_API_KEY')
     qualified_account_stats, add_deposits = construct_account_dict()
+    # for account in qualified_account_stats:
+    #     hasBeaNFT = address_has_beaNFTs(account)
+    #     print(f"{account} has beaNFTs: {hasBeaNFT}")
     for account in qualified_account_stats:
-        hasBeaNFT = addressHasBeaNFTs(account)
-        print(f"{account} has beaNFTs: {hasBeaNFT}")
-    print(qualified_account_stats)
+        count = get_address_beanft_count(account)
+        print(f"{account} has {count} beaNFTs")
     # final_dict = filter_qualified_accounts(qualified_account_stats)
 
