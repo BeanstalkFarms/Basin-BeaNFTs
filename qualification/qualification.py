@@ -1,6 +1,8 @@
 import json
 import requests
 from pprint import pprint
+import os
+from dotenv import load_dotenv
 
 # Constructs a dictionary of initially qualified accounts
 def construct_account_dict():
@@ -78,9 +80,13 @@ def filter_qualified_accounts(qualified_accounts_stats):
             qualified_accounts_stats[account][2] -= account_bdv_removed[account] 
     return qualified_accounts_stats
 
-
-qualified_account_stats, add_deposits = construct_account_dict()
-# final_dict = filter_qualified_accounts(qualified_account_stats)
+def addressHasBeaNFTs(wallet_address):
+    for collection in previous_beaNFT_collections:
+        url = f"https://eth-mainnet.g.alchemy.com/nft/v2/{ALCHEMY_API_KEY}/isHolderOfCollection?wallet={wallet_address}&contractAddress={collection}"
+        headers = {"accept": "application/json"}
+        response = requests.get(url, headers=headers)
+        isHolder = response.json()["isHolderOfCollection"]
+        return isHolder
 
 def get_total_nfts(qualified_account_stats):
     total_nfts = 0
@@ -95,7 +101,18 @@ def extract_to_csv(qualified_account_stats):
         for account in qualified_account_stats:
             file.write(account + "," + str(qualified_account_stats[account][0]) + "," + str(qualified_account_stats[account][1]) + "," + str(qualified_account_stats[account][2]) + "," + str(qualified_account_stats[account][3]) + "\n")
 
-# print("Account  | NFTs Qualified  |  First Deposit Season  |  Cummulative Deposited BDV  |  Individual Deposited BDV")
-# pprint(qualified_account_stats)
+# List of previous beaNFT collections
+                                # Genesis                                      # Winter                                       # Barn Raise
+previous_beaNFT_collections = ["0xa755A670Aaf1FeCeF2bea56115E65e03F7722A79", "0x459895483556daD32526eFa461F75E33E458d9E9" , "0xa969BB19b1d35582Ded7EA869cEcD60A3Bd5D1E8" ]
 
+
+if __name__ == "__main__":
+    load_dotenv()
+    ALCHEMY_API_KEY = os.getenv('ALCHEMY_API_KEY')
+    qualified_account_stats, add_deposits = construct_account_dict()
+    for account in qualified_account_stats:
+        hasBeaNFT = addressHasBeaNFTs(account)
+        print(f"{account} has beaNFTs: {hasBeaNFT}")
+    print(qualified_account_stats)
+    # final_dict = filter_qualified_accounts(qualified_account_stats)
 
