@@ -12,17 +12,18 @@ def construct_account_dict():
     add_deposits = data["data"]["addDeposits"]
 
     # Initialize an empty dictionary
-    # Each entry is of type: {account: [count, cummulative_deposited_bdv]}
+    # Each entry is of type: {account: [deposit_count, first_deposit_season, cummulative_deposited_bdv, [individual_deposited_bdv]]}
     qualified_accounts_stats = {}
 
     # Iterate through the entries in the "addDeposits" list and populate the dictionary
     for entry in add_deposits:
         account = entry["account"]
+        season = int(entry["season"])
         bdv = int(entry["bdv"])
         if account in qualified_accounts_stats:
-            qualified_accounts_stats[account] = [qualified_accounts_stats[account][0] + 1, qualified_accounts_stats[account][1] + bdv]
+            qualified_accounts_stats[account] = [qualified_accounts_stats[account][0] + 1, qualified_accounts_stats[account][1] , qualified_accounts_stats[account][2] + bdv , qualified_accounts_stats[account][3] + [bdv]]
         else:
-            qualified_accounts_stats[account] = [1 , bdv]
+            qualified_accounts_stats[account] = [1, season, bdv, [bdv]]
     
     return qualified_accounts_stats, add_deposits
 
@@ -74,18 +75,20 @@ def filter_qualified_accounts(qualified_accounts_stats):
         # Subtract 1 from the nfts qualified count and subtract the bdv removed from the cummulative deposited bdv
         if account_bdv_removed[account] / qualified_accounts_stats[account][1] > 0.2:
             qualified_accounts_stats[account][0] -= 1
-            qualified_accounts_stats[account][1] -= account_bdv_removed[account] 
+            qualified_accounts_stats[account][2] -= account_bdv_removed[account] 
     return qualified_accounts_stats
 
 
 qualified_account_stats, add_deposits = construct_account_dict()
-final_dict = filter_qualified_accounts(qualified_account_stats)
+# final_dict = filter_qualified_accounts(qualified_account_stats)
 
-total_nfts = 0
-for account in final_dict:
-    total_nfts += final_dict[account][0]
-    if final_dict[account][0] > 0:
-        print(account + " qualified for " + str(final_dict[account][0]) + " nfts with " + str(final_dict[account][1]) + " bdv deposited")
-print("Total nfts: " + str(total_nfts))
+# total_nfts = 0
+# for account in final_dict:
+#     total_nfts += final_dict[account][0]
+#     if final_dict[account][0] > 0:
+#         print(account + " qualified for " + str(final_dict[account][0]) + " nfts with " + str(final_dict[account][1]) + " bdv deposited")
+# print("Total nfts: " + str(total_nfts))
+print("Account  |  NFTs Qualified  |  Cummulative Deposited BDV  |  Individual Deposited BDV")
+pprint(qualified_account_stats)
 
 
