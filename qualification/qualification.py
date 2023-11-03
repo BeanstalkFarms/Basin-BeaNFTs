@@ -90,6 +90,7 @@ def address_has_beaNFTs(wallet_address):
         isHolder = response.json()["isHolderOfCollection"]
     return isHolder
 
+# Returns the number of beaNFTs from all collections the account has
 def get_address_beanft_count(wallet_address):
     count = 0
     for collection in previous_beaNFT_collections:
