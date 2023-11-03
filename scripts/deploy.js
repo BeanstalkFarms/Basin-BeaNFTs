@@ -4,25 +4,29 @@ const fs = require('fs');
 async function main () {
     const ERC721ABeanBasin = await ethers.getContractFactory("ERC721ABeanBasin");
     console.log('Deploying...');
-    const erc721 = await upgrades.deployProxy(ERC721ABeanBasin,[
+    const erc721ABasin = await upgrades.deployProxy(ERC721ABeanBasin,[
         'BeaNFT Basin Collection','BEANNFT',
-        ['0x735cab9b02fd153174763958ffb4e0a971dd7f29']
-        [7]
+        // first account of hardhat node
+        ['0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'],
+        [1]
     ],
     {kind: 'uups'});
-    await erc721.deployed();
-    const addresses = {
-        proxy: erc721.address,
-        implementation: await upgrades.erc1967.getImplementationAddress(
-            erc721.address)
-    };
-    console.log('Addresses:', addresses);
 
-    try { 
-        await run('verify', { address: addresses.implementation });
-    } catch (e) {}
+    await erc721ABasin.waitForDeployment();
 
-    fs.writeFileSync('deployment-addresses.json', JSON.stringify(addresses));
+    console.log('Deployed to:', await erc721ABasin.getAddress());
+    // const addresses = {
+    //     proxy: ERC721ABeanBasinInstance.address,
+    //     implementation: await upgrades.erc1967.getImplementationAddress(
+    //         ERC721ABeanBasinInstance.address)
+    // };
+    // console.log('Addresses:', addresses);
+
+    // try { 
+    //     await run('verify', { address: addresses.implementation });
+    // } catch (e) {}
+
+    // fs.writeFileSync('deployment-addresses.json', JSON.stringify(addresses));
 }
 
 main();

@@ -2,7 +2,7 @@
 // Code adopted and modified from:
 // Chiru labs: ERC721AUpsgradable v4.2.3
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import 'erc721a-upgradeable/contracts/ERC721AUpgradeable.sol';
@@ -30,7 +30,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     */
     function initialize(string memory name_, string memory symbol_,address[] calldata addresses_, uint256[] calldata amounts_) initializerERC721A initializer public {
         __ERC721A_init(name_, symbol_);
-        __Ownable_init();
+        __Ownable_init(msg.sender);
         __batchMintAllInit(addresses_,amounts_);
     }
 
@@ -63,20 +63,25 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         }
     }
 
+
+    /*
+    * @dev baseURI function used to return the IPFS baseURI for the metadata
+    * @return string baseURI of the NFT
+    */
     function baseURI() public view returns (string memory) {
         return _baseURI();
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
         // TODO: change to ipfs baseURI
-        return 'mybaseURI';
+        return 'https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/';
     }
 
     /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        if (!_exists(tokenId)) _revert(URIQueryForNonexistentToken);
+        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
 
         if (tokenUpgraded[tokenId]) {
             // return upgraded tokenURI with easter egg
