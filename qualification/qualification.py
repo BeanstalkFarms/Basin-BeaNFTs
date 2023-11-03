@@ -98,10 +98,10 @@ def get_total_qualified_deposits(qualified_account_stats):
     return total_nfts
 
 # Returns the season and bdv of all removals in the 600 seasons post initial deposit
-def get_address_removals(wallet_address, season_start):
+def get_address_removals(wallet_address, season_start , future_seasons):
     # Sanitize for graphql
     wallet_address = '"' + wallet_address + '"'
-    season_end = season_start + 600
+    season_end = season_start + future_seasons
     print("Searching for removals for account: " + wallet_address + " from season: " + str(season_start) + " to season: " + str(season_end))
     query = '{ removeDeposits( where: {account: ' + wallet_address + ', token_contains: "0xbea0e11282e2bb5893bece110cf199501e872bad", season_gte: ' + str(season_start) + ', season_lte: ' + str(season_end) + ' }) {blockNumber hash season account amount token bdv}}'
     result = run_graph_query(query)
@@ -126,13 +126,37 @@ def remove_accounts_with_no_qualified_deposits(qualified_account_stats):
         qualified_account_stats.pop(account)
     return qualified_account_stats
 
+# {account: [deposit_count, cummulative_deposited_bdv, cummulative_removed_bdv, [individual_deposit_season], [individual_deposited_bdv]] , [individual_remove_season] , [individual_remove_bdv], beanft_count}
 # Export account , deposit count, cummulative deposited bdv, cummulative removed bdv, beanft count to csv
 def extract_to_csv(qualified_account_stats):
+    # account stats
     with open('qualified_accounts.csv', 'w') as file:
         file.write("account,deposit_count,cummulative_deposited_bdv,cummulative_removed_bdv,beanft_count\n")
         for account in qualified_account_stats:
             file.write(account + "," + str(qualified_account_stats[account][0]) + "," + str(qualified_account_stats[account][1]) + "," + str(qualified_account_stats[account][2]) + "," + str(qualified_account_stats[account][7]) + "\n")
-
+    # individual deposit and removal stats
+    # each row should be
+    # account,deposit_season,remove_season
+    # populated with the the corresponding deposit and removal seasons from the deposit and removal lists
+    # --> ie: individual_deposit_season1, individual_remove_season1 etc
+    with open('qualified_accounts_individual_deposit_stats.csv', 'w') as file:
+        file.write("account,deposit_season,remove_season\n")
+        for account in qualified_account_stats:
+            deposit_seasons = qualified_account_stats[account][3]
+            # check for removals for 1000 seasons post initial deposit this time
+            future_seasons = 1000
+            cummulative_remove_bdv, remove_seasons, remove_bdvs = get_address_removals(account, qualified_account_stats[account][3][0] , future_seasons)
+            for i in range(max(len(deposit_seasons), len(remove_seasons))):
+                if i < len(deposit_seasons):
+                    deposit_season = deposit_seasons[i]
+                else:
+                    deposit_season = ""
+                if i < len(remove_seasons):
+                    remove_season = remove_seasons[i]
+                else:
+                    remove_season = ""
+                file.write(account + "," + str(deposit_season) + "," + str(remove_season) + "\n")
+    
 # List of previous beaNFT collections
 previous_beaNFT_collections = [
     "0xa755A670Aaf1FeCeF2bea56115E65e03F7722A79", # Genesis 
@@ -168,10 +192,17 @@ if __name__ == "__main__":
         beanft_count = get_address_beanft_count_csv(account)
         qualified_account_stats[account][7] = beanft_count
         # Get the cummulative bdv removal 600 season post initial deposit and the individual removal info
-        cummulative_remove_bdv, remove_seasons, remove_bdvs = get_address_removals(account, qualified_account_stats[account][3][0])
+        future_seasons = 600
+        cummulative_remove_bdv, remove_seasons, remove_bdvs = get_address_removals(account, qualified_account_stats[account][3][0] , future_seasons)
+        # Populate the dictionary with the removal info
         qualified_account_stats[account][2] = cummulative_remove_bdv
+        qualified_account_stats[account][5] = remove_seasons
+        qualified_account_stats[account][6] = remove_bdvs
+    # Filter out disqualified accounts and accounts that removed more than 20% of their deposited bdv
     qualified_account_stats = final_filtering(qualified_account_stats)
+    # Remove accounts with 0 qualified deposits
     qualified_account_stats = remove_accounts_with_no_qualified_deposits(qualified_account_stats)
+    # Export to csv
     extract_to_csv(qualified_account_stats)
     print("Total number of qualified deposits: " + str(get_total_qualified_deposits(qualified_account_stats)))
     print("Total number of qualified accounts: " + str(len(qualified_account_stats)))
