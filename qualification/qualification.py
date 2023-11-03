@@ -91,7 +91,7 @@ def get_address_beanft_count_csv(wallet_address):
     return count
 
 # Returns the total number of nfts to be minted
-def get_total_nfts_to_be_minted(qualified_account_stats):
+def get_total_qualified_deposits(qualified_account_stats):
     total_nfts = 0
     for account in qualified_account_stats:
         total_nfts += qualified_account_stats[account][0]
@@ -116,8 +116,18 @@ def get_address_removals(wallet_address, season_start):
         cummulative_remove_bdv += bdv
     return cummulative_remove_bdv, remove_seasons, remove_bdvs
 
+# Removes accounts with 0 qualified deposits
+def remove_accounts_with_no_qualified_deposits(qualified_account_stats):
+    accounts_to_remove = []
+    for account in qualified_account_stats:
+        if qualified_account_stats[account][0] == 0:
+            accounts_to_remove.append(account)
+    for account in accounts_to_remove:
+        qualified_account_stats.pop(account)
+    return qualified_account_stats
+
 # Export account , deposit count, cummulative deposited bdv, cummulative removed bdv, beanft count to csv
-def extract_to_csv_preliminary_filtering(qualified_account_stats):
+def extract_to_csv(qualified_account_stats):
     with open('qualified_accounts.csv', 'w') as file:
         file.write("account,deposit_count,cummulative_deposited_bdv,cummulative_removed_bdv,beanft_count\n")
         for account in qualified_account_stats:
@@ -151,12 +161,17 @@ accounts_dqd = [
 if __name__ == "__main__":
     load_dotenv()
     ALCHEMY_API_KEY = os.getenv('ALCHEMY_API_KEY')
+    # Construct the dictionary of initially qualified accounts and deposits
     qualified_account_stats, add_deposits = construct_account_dict()
     for account in qualified_account_stats:
         # Get the beanft count for the account
         beanft_count = get_address_beanft_count_csv(account)
         qualified_account_stats[account][7] = beanft_count
-        # Get the removals for the account
+        # Get the cummulative bdv removal 600 season post initial deposit and the individual removal info
         cummulative_remove_bdv, remove_seasons, remove_bdvs = get_address_removals(account, qualified_account_stats[account][3][0])
         qualified_account_stats[account][2] = cummulative_remove_bdv
     qualified_account_stats = final_filtering(qualified_account_stats)
+    qualified_account_stats = remove_accounts_with_no_qualified_deposits(qualified_account_stats)
+    extract_to_csv(qualified_account_stats)
+    print("Total number of qualified deposits: " + str(get_total_qualified_deposits(qualified_account_stats)))
+    print("Total number of qualified accounts: " + str(len(qualified_account_stats)))
