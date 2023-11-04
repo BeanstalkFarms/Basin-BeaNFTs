@@ -1,36 +1,67 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
+const {loadFixture} = require("@nomicfoundation/hardhat-toolbox/network-helpers")
 
-describe('ERC721ABeanBasin', function () {
-    let ERC721ABeanBasin;
-    let beanBasin;
-    let owner;
-    let addr1;
-    let addr2;
+describe("ERC721ABeanBasin", function () {
+  let erc721BeanBasin;
+  let owner;
+  let addr1;
+  let addr2;
 
-    beforeEach(async function () {
-        ERC721ABeanBasin = await ethers.getContractFactory('ERC721ABeanBasin');
-        [owner, addr1, addr2] = await ethers.getSigners();
-        beanBasin = await ERC721ABeanBasin.deploy();
-        await beanBasin.deployed();
-    });
+  async function deployAndInit() {
+    const ERC721ABeanBasin = await ethers.getContractFactory("ERC721ABeanBasin");
+    [owner, addr1, addr2] = await ethers.getSigners();
+    const erc721BeanBasin = await upgrades.deployProxy(ERC721ABeanBasin,[
+        'BeaNFT Basin Collection','BEANNFT',
+        [addr1.address, addr2.address],
+        [1 , 2]
+    ],
+    {kind: 'uups'});
+    await erc721BeanBasin.waitForDeployment();
 
-    describe('Deployment', function () {
-        it('Should set the right owner', async function () {
-            expect(await beanBasin.owner()).to.equal(owner.address);
-        });
+    return { erc721BeanBasin, owner, addr1, addr2 };
+  };
 
-        it('Should mint the correct amount of nfts to the right owner', async function () {
-            const ownerBalance = await beanBasin.balanceOf(owner.address);
-            expect(await beanBasin.totalSupply()).to.equal(ownerBalance);
-        });
-    });
+  it("Should initialize the contract with the correct name and symbol", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    expect(await erc721BeanBasin.name()).to.equal("BeaNFT Basin Collection");
+    expect(await erc721BeanBasin.symbol()).to.equal("BEANNFT");
+  });
 
-    describe('Metadata', function () {
-        it('Should return the correct token URI', async function () {
-            await beanBasin.connect(owner).mint(addr1.address, 'https://example.com/token/1');
-            expect(await beanBasin.tokenURI(1)).to.equal('https://example.com/token/1');
-        });
-    });
+  it("Should mint NFTs to the specified addresses", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    expect(await erc721BeanBasin.ownerOf(0)).to.equal(addr1.address);
+    expect(await erc721BeanBasin.ownerOf(1)).to.equal(addr2.address);
+    expect(await erc721BeanBasin.ownerOf(2)).to.equal(addr2.address);
+  });
+
+  it("Should return the correct base URI", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    expect(await erc721BeanBasin.baseURI()).to.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/");
+  });
+
+  it("Should return the correct token URI for an existing token", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    const tokenURI = await erc721BeanBasin.tokenURI(1);
+    expect(tokenURI).to.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/1");
+  });
+
+  it("Should not return a token URI for a nonexistent token", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    await expect(erc721BeanBasin.tokenURI(3)).to.be.revertedWithCustomError(erc721BeanBasin,"URIQueryForNonexistentToken")
+  });
+
+  it("Should burn an NFT", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    await erc721BeanBasin.burn(1);
+    expect(await erc721BeanBasin.balanceOf(owner.address)).to.equal(0);
+  });
+
+  it("Should upgrade NFTs with easter egg", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    await erc721BeanBasin.upgradeNFTs([2]);
+    const tokenURI = await erc721BeanBasin.tokenURI(2);
+    expect(tokenURI).to.not.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/2");
+  });
+
 });
-
