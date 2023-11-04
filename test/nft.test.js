@@ -3,11 +3,7 @@ const { ethers } = require('hardhat');
 const {loadFixture} = require("@nomicfoundation/hardhat-toolbox/network-helpers")
 
 describe("ERC721ABeanBasin", function () {
-  let erc721BeanBasin;
-  let owner;
-  let addr1;
-  let addr2;
-
+  
   async function deployAndInit() {
     const ERC721ABeanBasin = await ethers.getContractFactory("ERC721ABeanBasin");
     [owner, addr1, addr2] = await ethers.getSigners();

@@ -15,6 +15,7 @@ async function main () {
     await erc721ABasin.waitForDeployment();
 
     console.log('Deployed to:', await erc721ABasin.getAddress());
+    
     // const addresses = {
     //     proxy: ERC721ABeanBasinInstance.address,
     //     implementation: await upgrades.erc1967.getImplementationAddress(

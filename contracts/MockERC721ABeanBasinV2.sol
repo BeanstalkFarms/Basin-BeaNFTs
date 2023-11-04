@@ -16,10 +16,11 @@ import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 * NFTs are batch minted to addresses on initialization
 * No need for a mint function
 */
-contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
+contract MockERC721ABeanBasinV2 is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
     // Mapping to mark token upgrades after 1000 seasons of deposit holding
     mapping(uint256 => bool) public tokenUpgraded;
+    uint256 public constant modification = 600;
 
     /*
     * @param name_ string name of the NFT
