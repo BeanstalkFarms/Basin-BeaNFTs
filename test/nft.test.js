@@ -39,7 +39,7 @@ describe("ERC721ABeanBasin", function () {
   it("Should return the correct token URI for an existing token", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
     const tokenURI = await erc721BeanBasin.tokenURI(1);
-    expect(tokenURI).to.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/1");
+    expect(tokenURI).to.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/1.json");
   });
 
   it("Should not return a token URI for a nonexistent token", async function () {
@@ -57,7 +57,7 @@ describe("ERC721ABeanBasin", function () {
     const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
     await erc721BeanBasin.upgradeNFTs([2]);
     const tokenURI = await erc721BeanBasin.tokenURI(2);
-    expect(tokenURI).equal("upgradedURI2");
+    expect(tokenURI).equal("upgradedURI2.json");
   });
 
   it("Should get the correct next tokenId", async function () {
@@ -68,6 +68,12 @@ describe("ERC721ABeanBasin", function () {
   it("Should get the correct total supply", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
     expect(await erc721BeanBasin.totalSupply()).to.equal(3);
+  });
+
+  it("Check if nft exists corrctly", async function () {
+    const { erc721BeanBasin } = await loadFixture(deployAndInit);
+    expect(await erc721BeanBasin.exists(0)).to.equal(true);
+    expect(await erc721BeanBasin.exists(5)).to.equal(false);
   });
 
 });

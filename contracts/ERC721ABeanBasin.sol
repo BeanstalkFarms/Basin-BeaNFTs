@@ -96,12 +96,21 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
 
         if (tokenUpgraded[tokenId]) {
             // return upgraded tokenURI with easter egg
-            string memory upgradedBaseURI = _upgradedBaseURI();
-            return bytes(upgradedBaseURI).length != 0 ? string(abi.encodePacked(upgradedBaseURI, _toString(tokenId))) : '';
+            string memory __upgradedBaseURI = _upgradedBaseURI();
+            return bytes(__upgradedBaseURI).length != 0 ? string(abi.encodePacked(__upgradedBaseURI, _toString(tokenId),".json")) : '';
         } else {
-            string memory baseURI = _baseURI();
-            return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, _toString(tokenId))) : '';
+            string memory __baseURI = _baseURI();
+            return bytes(__baseURI).length != 0 ? string(abi.encodePacked(__baseURI, _toString(tokenId),".json")) : '';
         }
+    }
+
+    /*
+    * @dev exists function used to check if a tokenId exists
+    * @param tokenId uint256 tokenId of NFT to check
+    * @return bool true if exists, false if not
+    */
+    function exists(uint256 tokenId) public view returns (bool) {
+        return _exists(tokenId);
     }
 
     /*
