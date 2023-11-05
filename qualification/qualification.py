@@ -130,32 +130,10 @@ def remove_accounts_with_no_qualified_deposits(qualified_account_stats):
 # Export account , deposit count, cummulative deposited bdv, cummulative removed bdv, beanft count to csv
 def extract_to_csv(qualified_account_stats):
     # account stats
-    with open('qualified_accounts.csv', 'w') as file:
-        file.write("account,deposit_count,cummulative_deposited_bdv,cummulative_removed_bdv,beanft_count\n")
+    with open('qualified_account_stats.csv', 'w') as file:
+        file.write("account,final_qualified_deposit_count,cummulative_deposited_bdv,cummulative_removed_bdv_600_seasons,beanft_count, deposit_seasons\n")
         for account in qualified_account_stats:
-            file.write(account + "," + str(qualified_account_stats[account][0]) + "," + str(qualified_account_stats[account][1]) + "," + str(qualified_account_stats[account][2]) + "," + str(qualified_account_stats[account][7]) + "\n")
-    # individual deposit and removal stats
-    # each row should be
-    # account,deposit_season,remove_season
-    # populated with the the corresponding deposit and removal seasons from the deposit and removal lists
-    # --> ie: individual_deposit_season1, individual_remove_season1 etc
-    with open('qualified_accounts_individual_deposit_stats.csv', 'w') as file:
-        file.write("account,deposit_season,remove_season\n")
-        for account in qualified_account_stats:
-            deposit_seasons = qualified_account_stats[account][3]
-            # check for removals for 1000 seasons post initial deposit this time
-            future_seasons = 1000
-            cummulative_remove_bdv, remove_seasons, remove_bdvs = get_address_removals(account, qualified_account_stats[account][3][0] , future_seasons)
-            for i in range(max(len(deposit_seasons), len(remove_seasons))):
-                if i < len(deposit_seasons):
-                    deposit_season = deposit_seasons[i]
-                else:
-                    deposit_season = ""
-                if i < len(remove_seasons):
-                    remove_season = remove_seasons[i]
-                else:
-                    remove_season = ""
-                file.write(account + "," + str(deposit_season) + "," + str(remove_season) + "\n")
+            file.write(account + "," + str(qualified_account_stats[account][0]) + "," + str(qualified_account_stats[account][1]) + "," + str(qualified_account_stats[account][2]) + "," + str(qualified_account_stats[account][7]) + "," + str(qualified_account_stats[account][3]) + "\n")
     
 # List of previous beaNFT collections
 previous_beaNFT_collections = [

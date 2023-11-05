@@ -14,20 +14,17 @@ async function main () {
 
     await erc721ABasin.waitForDeployment();
 
-    console.log('Deployed to:', await erc721ABasin.getAddress());
+    proxyAddress = await erc721ABasin.getAddress();
+    implementationAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
+    console.log('Proxy address:', proxyAddress);
+    console.log('Implementation address: ', implementationAddress);
+
+    const addresses = {
+        proxyAddress: proxyAddress,
+        implementationAddress: implementationAddress
+    }
     
-    // const addresses = {
-    //     proxy: ERC721ABeanBasinInstance.address,
-    //     implementation: await upgrades.erc1967.getImplementationAddress(
-    //         ERC721ABeanBasinInstance.address)
-    // };
-    // console.log('Addresses:', addresses);
-
-    // try { 
-    //     await run('verify', { address: addresses.implementation });
-    // } catch (e) {}
-
-    // fs.writeFileSync('deployment-addresses.json', JSON.stringify(addresses));
+    fs.writeFileSync('deployment-addresses.json', JSON.stringify(addresses));
 }
 
 main();

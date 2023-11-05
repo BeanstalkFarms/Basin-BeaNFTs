@@ -75,6 +75,19 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return 'https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/';
     }
 
+    /*
+    * @dev baseURI function used to return the IPFS baseURI for the metadata
+    * @return string baseURI of the NFT
+    */
+    function upgradedBaseURI() public view returns (string memory) {
+        return _upgradedBaseURI();
+    }
+
+
+    function _upgradedBaseURI() internal view virtual returns (string memory) {
+        return 'upgradedURI';
+    }
+
     /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
@@ -83,6 +96,8 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
 
         if (tokenUpgraded[tokenId]) {
             // return upgraded tokenURI with easter egg
+            string memory upgradedBaseURI = _upgradedBaseURI();
+            return bytes(upgradedBaseURI).length != 0 ? string(abi.encodePacked(upgradedBaseURI, _toString(tokenId))) : '';
         } else {
             string memory baseURI = _baseURI();
             return bytes(baseURI).length != 0 ? string(abi.encodePacked(baseURI, _toString(tokenId))) : '';

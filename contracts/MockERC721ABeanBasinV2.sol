@@ -73,7 +73,7 @@ contract MockERC721ABeanBasinV2 is ERC721AUpgradeable, OwnableUpgradeable, UUPSU
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
-        return 'https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/';
+        return 'BASEURIV2';
     }
 
     /**
