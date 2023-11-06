@@ -56,7 +56,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     */  
     function __batchMintAllInit(address[] calldata addresses, uint256[] calldata amount) internal onlyInitializingERC721A{
         // check that length of addresses == length of amount 
-        require(addresses.length == amount.length);
+        require(addresses.length == amount.length, "ERC721ABeanBasin: length of addresses != length of amounts to mint");
         
         for(uint256 i; i < addresses.length; ++i){
             _mintERC2309(addresses[i], amount[i]);
