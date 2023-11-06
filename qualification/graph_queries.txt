@@ -2,6 +2,7 @@
 # Contains all BEANETH deposits that were made in the qualification period
 # (season 15410-16010) and were greater than 1000 BDV
 # Includes converts from BEAN to BEANETH 
+# This generated the Initially Qualified Deposits JSON file
 
 query QualifiedDeposits {
   addDeposits(
@@ -19,7 +20,7 @@ query QualifiedDeposits {
 }
 
 # For each address in the QualifiedDeposits query, we need to check if they have
-# made a withdrawl in the 600 seasons following the initial deposit
+# made a withdrawl in the 600 seasons following the initial deposit season
 # This includes converts from BEANETH to BEAN, but this is fine because
 # technically, this means that liquidity was removed from the BEANETH Well
 # Example query for a single address
@@ -27,6 +28,27 @@ query QualifiedDeposits {
 query Address_Has_Removed_BEANETH_Deposit {
   removeDeposits(
     where: {account: "0xf7a7ae64cf9e9dd26fd2530a9b6fc571a31e75a1", token_contains: "0xbea0e11282e2bb5893bece110cf199501e872bad", season_gte: 15669, season_lte: 16269}
+  ) {
+    blockNumber
+    hash
+    season
+    account
+    amount
+    token
+    bdv
+  }
+}
+
+# For accounts that did not get disqualified from the process above,
+# we need to get the season that they actually removed the deposit post season 16010
+# To do this , for every qualified deposit, we again checked for removals , but this time
+# we only checked for removals that happened between season of initial deposit and
+# season 16995 (the season where the rarity score of each deposit was calculated)
+# Example query for a single address
+
+query Qualified_Address_Remove_Deposit_Season {
+  removeDeposits(
+    where: {account: "0xf7a7ae64cf9e9dd26fd2530a9b6fc571a31e75a1", token_contains: "0xbea0e11282e2bb5893bece110cf199501e872bad", season_gte: 15669, season_lte: 16995}
   ) {
     blockNumber
     hash

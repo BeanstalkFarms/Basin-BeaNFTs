@@ -76,4 +76,12 @@ describe("ERC721ABeanBasin", function () {
     expect(await erc721BeanBasin.exists(5)).to.equal(false);
   });
 
+  it("Transfers nft correctly", async function () {
+    const { erc721BeanBasin, addr1, addr2 } = await loadFixture(deployAndInit);
+    // since the caller is "from" , no need to approve
+                                                        // FROM         TO          TOKENID 
+    await erc721BeanBasin.connect(addr1).safeTransferFrom(addr1.address, addr2.address, 0);
+    expect(await erc721BeanBasin.ownerOf(0)).to.equal(addr2.address);
+  });
+
 });
