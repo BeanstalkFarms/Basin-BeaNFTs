@@ -39,4 +39,13 @@ describe("ERC721ABeanBasin Proxy Upgrade", function () {
         expect(await erc721BeanBasinV2.baseURI()).to.equal("BASEURIV2");
     });
 
+    it("Should correctly transfer ownership", async function () {
+        const { erc721BeanBasin , proxyAddress  , owner, addr1} = await loadFixture(deployAndInit);
+        // transfer ownership to addr1
+        console.log("Owner: ", await erc721BeanBasin.owner());
+        await erc721BeanBasin.connect(owner).transferOwnership(addr1.address);
+        console.log("Owner: ", await erc721BeanBasin.owner());
+        expect(await erc721BeanBasin.owner()).to.equal(addr1.address);
+    });
+
 });
