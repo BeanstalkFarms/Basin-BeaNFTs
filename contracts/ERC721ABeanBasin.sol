@@ -72,7 +72,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
-        return 'https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/';
+        return 'ipfs://QmaU78pvAub1QCKCtUxGxaz7VRHSPg7GG6wHEDcGABS8ha/';
     }
 
     /*
