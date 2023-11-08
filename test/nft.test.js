@@ -33,13 +33,14 @@ describe("ERC721ABeanBasin", function () {
 
   it("Should return the correct base URI", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
-    expect(await erc721BeanBasin.baseURI()).to.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/");
+    expect(await erc721BeanBasin.baseURI()).to.equal('ipfs://QmaU78pvAub1QCKCtUxGxaz7VRHSPg7GG6wHEDcGABS8ha/');
   });
 
   it("Should return the correct token URI for an existing token", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
     const tokenURI = await erc721BeanBasin.tokenURI(1);
-    expect(tokenURI).to.equal("https://ipfs.io/ipfs/QmP7tAHsiLTgtn2TLekG9HWhfLdHFgk6HSnYnBhGK3xxFB/1.json");
+    console.log(tokenURI);
+    expect(tokenURI).to.equal('ipfs://QmaU78pvAub1QCKCtUxGxaz7VRHSPg7GG6wHEDcGABS8ha/1.json');
   });
 
   it("Should not return a token URI for a nonexistent token", async function () {
