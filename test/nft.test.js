@@ -39,6 +39,7 @@ describe("ERC721ABeanBasin", function () {
   it("Should return the correct token URI for an existing token", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
     const tokenURI = await erc721BeanBasin.tokenURI(1);
+    console.log("Initial URI");
     console.log(tokenURI);
     expect(tokenURI).to.equal('ipfs://QmaU78pvAub1QCKCtUxGxaz7VRHSPg7GG6wHEDcGABS8ha/1.json');
   });
@@ -56,9 +57,11 @@ describe("ERC721ABeanBasin", function () {
 
   it("Should upgrade NFTs with easter egg", async function () {
     const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
-    await erc721BeanBasin.upgradeNFTs([2]);
-    const tokenURI = await erc721BeanBasin.tokenURI(2);
-    expect(tokenURI).equal("upgradedURI2.json");
+    await erc721BeanBasin.upgradeNFTs([1]);
+    const tokenURI = await erc721BeanBasin.tokenURI(1);
+    expect(tokenURI).equal("ipfs://Qmdav3rKV6fSt15CjX2QyLnzPAjeJNndH6wRn7v9gQ7Yy7/1.json");
+    console.log("Upgraded URI");
+    console.log(tokenURI);
   });
 
   it("Should get the correct next tokenId", async function () {

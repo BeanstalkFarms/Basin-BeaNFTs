@@ -85,7 +85,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
 
 
     function _upgradedBaseURI() internal view virtual returns (string memory) {
-        return 'upgradedURI';
+        return 'ipfs://Qmdav3rKV6fSt15CjX2QyLnzPAjeJNndH6wRn7v9gQ7Yy7/';
     }
 
     /**
