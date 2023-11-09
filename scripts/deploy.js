@@ -6,9 +6,8 @@ async function main () {
     console.log('Deploying...');
     const erc721ABasin = await upgrades.deployProxy(ERC721ABeanBasin,[
         'BeaNFT Basin Collection','BEANNFT',
-        // first account of hardhat node
-        ['0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' , '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'],
-        [1 , 3]
+        ['0x0434fBe14302dDAC7615317B4001703aCFfF39bA' , '0xD8B77D72109C7a8370f64Ec51Cfc974199508782'],
+        [10 , 15]
     ],
     {kind: 'uups'});
 
@@ -24,7 +23,7 @@ async function main () {
         implementationAddress: implementationAddress
     }
     
-    fs.writeFileSync('deployment-addresses.json', JSON.stringify(addresses));
+    fs.writeFileSync('deployment-addresses-sepolia.json', JSON.stringify(addresses));
 }
 
 main();

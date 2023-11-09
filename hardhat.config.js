@@ -7,7 +7,7 @@ require('dotenv').config();
 module.exports = {
   solidity: "0.8.20",
   networks: {
-    goerli: {
+    sepolia: {
       url: process.env.ALCHEMY_SEPOLIA_URL,
       accounts: [process.env.PRIVATE_KEY]
     }
@@ -18,5 +18,8 @@ module.exports = {
     enabled: (process.env.REPORT_GAS) ? true : false,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     noColors: true,
-  }
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY,
+  },
 };
