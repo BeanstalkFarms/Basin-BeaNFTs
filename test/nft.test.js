@@ -33,7 +33,7 @@ describe("ERC721ABeanBasin", function () {
 
   it("Should return the correct base URI", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
-    expect(await erc721BeanBasin.baseURI()).to.equal('ipfs://QmaU78pvAub1QCKCtUxGxaz7VRHSPg7GG6wHEDcGABS8ha/');
+    expect(await erc721BeanBasin.baseURI()).to.equal('ipfs://QmT5roBqPD9cQX8pPFVmLygGPBdw3gY2azqYDeCT6YHsnw/');
   });
 
   it("Should return the correct token URI for an existing token", async function () {
@@ -41,7 +41,7 @@ describe("ERC721ABeanBasin", function () {
     const tokenURI = await erc721BeanBasin.tokenURI(1);
     console.log("Initial URI");
     console.log(tokenURI);
-    expect(tokenURI).to.equal('ipfs://QmaU78pvAub1QCKCtUxGxaz7VRHSPg7GG6wHEDcGABS8ha/1.json');
+    expect(tokenURI).to.equal('ipfs://QmT5roBqPD9cQX8pPFVmLygGPBdw3gY2azqYDeCT6YHsnw/1.json');
   });
 
   it("Should not return a token URI for a nonexistent token", async function () {
@@ -59,7 +59,7 @@ describe("ERC721ABeanBasin", function () {
     const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
     await erc721BeanBasin.upgradeNFTs([1]);
     const tokenURI = await erc721BeanBasin.tokenURI(1);
-    expect(tokenURI).equal("ipfs://Qmdav3rKV6fSt15CjX2QyLnzPAjeJNndH6wRn7v9gQ7Yy7/1.json");
+    expect(tokenURI).equal("ipfs://QmXQd2bpwZTtDst3eaGcCHEv13yzanbKsBuvuZhzXKs15a/1.json");
     console.log("Upgraded URI");
     console.log(tokenURI);
   });
