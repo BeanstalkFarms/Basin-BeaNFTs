@@ -100,6 +100,14 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return _exists(tokenId);
     }
 
+    /**
+    * @dev mint function used to mint NFT(s) after deployment.
+    * @param to address to mint to.
+    * @param amount uint256 amount to mint.
+    */
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
 
     /**
     * @dev burn function used to burn NFT(s).
@@ -141,7 +149,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     /**
      * Returns the number of tokens minted by `owner`.
      */
-    function numberMinted(address owner) external view returns (uint256) {
+    function numberMinted(address owner) public view returns (uint256) {
         return _numberMinted(owner);
     }
 

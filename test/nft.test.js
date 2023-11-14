@@ -6,7 +6,7 @@ describe("ERC721ABeanBasin", function () {
 
   async function deployAndInit() {
     const ERC721ABeanBasin = await ethers.getContractFactory("ERC721ABeanBasin");
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [owner, addr1, addr2 , addr3] = await ethers.getSigners();
     const erc721BeanBasin = await upgrades.deployProxy(ERC721ABeanBasin,[
         'BeaNFT Basin Collection','BEANNFT',
         [addr1.address, addr2.address],
@@ -15,7 +15,7 @@ describe("ERC721ABeanBasin", function () {
     {kind: 'uups'});
     await erc721BeanBasin.waitForDeployment();
 
-    return { erc721BeanBasin, owner, addr1, addr2 };
+    return { erc721BeanBasin, owner, addr1, addr2 , addr3 };
   };
 
   it("Should initialize the contract with the correct name and symbol", async function () {
@@ -59,9 +59,9 @@ describe("ERC721ABeanBasin", function () {
   //   const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
   //   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   //   // approve first (transfer to zero address)
-  //   await erc721BeanBasin.connect(addr1.address).approve(ZERO_ADDRESS, 1);
+  //   await erc721BeanBasin.connect(addr1).approve(ZERO_ADDRESS, 1);
   //   // then burn
-  //   await erc721BeanBasin.connect(addr1.address).burn(1);
+  //   await erc721BeanBasin.connect(addr1).burn(1);
   //   expect(await erc721BeanBasin.balanceOf(addr1.address)).to.equal(0);
   // });
 
@@ -101,6 +101,17 @@ describe("ERC721ABeanBasin", function () {
                                                         // FROM         TO          TOKENID 
     await erc721BeanBasin.connect(addr1).safeTransferFrom(addr1.address, addr2.address, 0);
     expect(await erc721BeanBasin.ownerOf(0)).to.equal(addr2.address);
+  });
+
+  it("Mints nfts correctly after deployment only by owner", async function () {
+    const { erc721BeanBasin , addr3 } = await loadFixture(deployAndInit);
+    // simple mint
+    await erc721BeanBasin.mint(addr3.address, 1);
+    expect(await erc721BeanBasin.ownerOf(3)).to.equal(addr3.address);
+    // total supply
+    expect(await erc721BeanBasin.totalSupply()).to.equal(4);
+    // test only owner can mint
+    await expect(erc721BeanBasin.connect(addr3).mint(addr3.address, 1)).to.be.revertedWithCustomError(erc721BeanBasin,"OwnableUnauthorizedAccount");
   });
 
 });
