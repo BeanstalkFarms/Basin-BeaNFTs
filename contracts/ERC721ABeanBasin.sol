@@ -100,6 +100,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return _exists(tokenId);
     }
 
+
     /**
     * @dev burn function used to burn NFT(s).
     * @param tokenId uint256 tokenId of NFT to burn.
@@ -114,7 +115,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     * Upgraded nfts with easter egg will have a different tokenURI.
     * @param tokenIds array of tokenIds to mark as upgraded.
     */
-    function upgradeNFTs(uint256[] calldata tokenIds) public onlyOwner {
+    function upgradeNFTs(uint256[] calldata tokenIds) external onlyOwner {
         for(uint256 i; i < tokenIds.length; ++i){
             isUpgraded[tokenIds[i]] = true;
         }
@@ -124,7 +125,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     * @dev degrade function used to degrade nfts back to original.
     * @param tokenIds array of tokenIds to degrade.
     */
-    function degradeNFTs(uint256[] calldata tokenIds) public onlyOwner {
+    function degradeNFTs(uint256[] calldata tokenIds) external onlyOwner {
         for(uint256 i; i < tokenIds.length; ++i){
             isUpgraded[tokenIds[i]] = false;
         }
@@ -133,51 +134,36 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     /** 
     * @dev isNFTUpgraded function used to check if an NFT is upgraded.
     */
-    function isNFTUpgraded(uint256 tokenId) public view returns (bool) {
+    function isNFTUpgraded(uint256 tokenId) external view returns (bool) {
         return isUpgraded[tokenId];
     }
 
     /**
      * Returns the number of tokens minted by `owner`.
      */
-    function numberMinted(address owner) public view returns (uint256) {
+    function numberMinted(address owner) external view returns (uint256) {
         return _numberMinted(owner);
     }
 
     /**
      * @dev Returns the total amount of tokens minted in the contract.
      */
-    function totalMinted() public view returns (uint256) {
+    function totalMinted() external view returns (uint256) {
         return _totalMinted();
     }
 
     /**
      * @dev Returns the total number of tokens burned.
      */
-    function totalBurned() public view returns (uint256) {
+    function totalBurned() external view returns (uint256) {
         return _totalBurned();
     }
 
     /**
     * @dev Returns the next token ID to be minted.
     */
-    function nextTokenId() public view returns (uint256) {
+    function nextTokenId() external view returns (uint256) {
         return _nextTokenId();
-    }
-
-    /**
-    * Returns the auxiliary data for `owner`. (e.g. number of whitelist mint slots used).
-    */
-    function getAux(address owner) public view returns (uint64) {
-        return _getAux(owner);
-    }
-
-    /**
-     * Sets the auxiliary data for `owner`. (e.g. number of whitelist mint slots used).
-     * If there are multiple variables, please pack them into a uint64.
-     */
-    function setAux(address owner, uint64 aux) public {
-        _setAux(owner, aux);
     }
 }
 

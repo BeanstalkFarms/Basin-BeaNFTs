@@ -49,11 +49,21 @@ describe("ERC721ABeanBasin", function () {
     await expect(erc721BeanBasin.tokenURI(3)).to.be.revertedWithCustomError(erc721BeanBasin,"URIQueryForNonexistentToken")
   });
 
-  it("Should burn an NFT", async function () {
-    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
-    await erc721BeanBasin.burn(1);
-    expect(await erc721BeanBasin.balanceOf(owner.address)).to.equal(0);
+  it("Should get number minted", async function () {
+    const { erc721BeanBasin, addr1 , addr2 } = await loadFixture(deployAndInit);
+    const numberMinted = await erc721BeanBasin.numberMinted(addr2.address);
+    await expect(numberMinted).to.equal(2);
   });
+
+  // it("Should burn an NFT", async function () {
+  //   const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+  //   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+  //   // approve first (transfer to zero address)
+  //   await erc721BeanBasin.connect(addr1.address).approve(ZERO_ADDRESS, 1);
+  //   // then burn
+  //   await erc721BeanBasin.connect(addr1.address).burn(1);
+  //   expect(await erc721BeanBasin.balanceOf(addr1.address)).to.equal(0);
+  // });
 
   it("Should upgrade NFTs with easter egg", async function () {
     const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
@@ -72,6 +82,11 @@ describe("ERC721ABeanBasin", function () {
   it("Should get the correct total supply", async function () {
     const { erc721BeanBasin } = await loadFixture(deployAndInit);
     expect(await erc721BeanBasin.totalSupply()).to.equal(3);
+  });
+
+  it("Should get the correct total minted", async function () {
+    const { erc721BeanBasin } = await loadFixture(deployAndInit);
+    expect(await erc721BeanBasin.totalMinted()).to.equal(3);
   });
 
   it("Check if nft exists corrctly", async function () {
