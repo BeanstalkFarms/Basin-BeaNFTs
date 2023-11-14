@@ -14,11 +14,11 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     // after basin deployment.
     mapping(uint256 id => bool upgraded) public isUpgraded;
 
-    /*
+    /**
     * @param name_ string name of the NFT.
     * @param symbol_ string symbol of the NFT.
     * @param addresses_ array of addresses to mint to.
-    * @param amt_ array of amounts to mint to each address.
+    * @param amounts_ array of amounts to mint to each address.
     * Upon initialization, the contract will mint the NFTs to the addresses provided.
     */
     function initialize(string memory name_, string memory symbol_,address[] calldata addresses_, uint256[] calldata amounts_) initializerERC721A initializer public {
@@ -27,7 +27,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         __batchMintAllInit(addresses_,amounts_);
     }
 
-    /*
+    /**
     * Perform an upgrade of an ERC1967Proxy, when this contract.
     * is set as the implementation behind such a proxy.
     * The _authorizeUpgrade function must be overridden.
@@ -35,10 +35,10 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     */
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
-    /*
+    /**
     * @dev __batchMintAllInit function used to mint NFT(s) to addresses.
-    * @param addresses_ array of addresses to mint to.
-    * @param amt_ array of amounts to mint to each address.
+    * @param addresses array of addresses to mint to.
+    * @param amount array of amounts to mint to each address.
     * This function can only be called on initialization of the contract.
     * 
     * _mintERC2309 mints `quantity` tokens and transfers them to `to`.
@@ -56,7 +56,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         }
     }
 
-    /*
+    /**
     * @dev baseURI function used to return the IPFS baseURI for the metadata.
     * @return string baseURI of the NFT.
     */
@@ -68,7 +68,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return 'ipfs://QmT5roBqPD9cQX8pPFVmLygGPBdw3gY2azqYDeCT6YHsnw/';
     }
 
-    /*
+    /**
     * @dev baseURI function used to return the IPFS baseURI for the metadata.
     * @return string baseURI of the NFT.
     */
@@ -91,7 +91,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return bytes(uri).length != 0 ? string(abi.encodePacked(uri, _toString(tokenId),".json")) : '';
     }
 
-    /*
+    /**
     * @dev exists function used to check if a tokenId exists.
     * @param tokenId uint256 tokenId of NFT to check.
     * @return bool true if exists, false if not.
@@ -100,7 +100,7 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return _exists(tokenId);
     }
 
-    /*
+    /**
     * @dev burn function used to burn NFT(s).
     * @param tokenId uint256 tokenId of NFT to burn.
     * Enforces an approval check
@@ -109,11 +109,9 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         _burn(tokenId , true);
     }
 
-    /*
+    /**
     * @dev upgradeNFTs function used to mark NFTs as upgraded.
     * Upgraded nfts with easter egg will have a different tokenURI.
-    * Farmers will get an upgrade if they held their.
-    * BEANETH Deposit for 1000+ seasons.
     * @param tokenIds array of tokenIds to mark as upgraded.
     */
     function upgradeNFTs(uint256[] calldata tokenIds) public onlyOwner {
@@ -122,9 +120,19 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         }
     }
 
-    /*
-    * @dev isNFTUpgraded function used to check if an NFT is upgraded.
+    /**
+    * @dev upgradeNFTs function used to mark NFTs as upgraded.
     * Upgraded nfts with easter egg will have a different tokenURI.
+    * @param tokenIds array of tokenIds to mark as upgraded.
+    */
+    function degradeNFTs(uint256[] calldata tokenIds) public onlyOwner {
+        for(uint256 i; i < tokenIds.length; ++i){
+            isUpgraded[tokenIds[i]] = false;
+        }
+    }
+
+    /** 
+    * @dev isNFTUpgraded function used to check if an NFT is upgraded.
     */
     function isNFTUpgraded(uint256 tokenId) public view returns (bool) {
         return isUpgraded[tokenId];
@@ -144,7 +152,6 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         return _totalMinted();
     }
 
-
     /**
      * @dev Returns the total number of tokens burned.
      */
@@ -153,14 +160,14 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     }
 
     /**
-     * @dev Returns the next token ID to be minted.
+    * @dev Returns the next token ID to be minted.
     */
     function nextTokenId() public view returns (uint256) {
         return _nextTokenId();
     }
 
     /**
-     * Returns the auxiliary data for `owner`. (e.g. number of whitelist mint slots used).
+    * Returns the auxiliary data for `owner`. (e.g. number of whitelist mint slots used).
     */
     function getAux(address owner) public view returns (uint64) {
         return _getAux(owner);
