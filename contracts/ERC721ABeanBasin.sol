@@ -87,14 +87,8 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
 
-        if (isUpgraded[tokenId]) {
-            // return upgraded tokenURI with easter egg.
-            string memory __upgradedBaseURI = _upgradedBaseURI();
-            return bytes(__upgradedBaseURI).length != 0 ? string(abi.encodePacked(__upgradedBaseURI, _toString(tokenId),".json")) : '';
-        } else {
-            string memory __baseURI = _baseURI();
-            return bytes(__baseURI).length != 0 ? string(abi.encodePacked(__baseURI, _toString(tokenId),".json")) : '';
-        }
+        string memory uri = isUpgraded[tokenId] ? _upgradedBaseURI() : _baseURI();
+        return bytes(uri).length != 0 ? string(abi.encodePacked(uri, _toString(tokenId),".json")) : '';
     }
 
     /*
