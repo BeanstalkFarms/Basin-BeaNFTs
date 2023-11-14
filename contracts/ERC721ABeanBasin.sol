@@ -103,23 +103,10 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     /*
     * @dev burn function used to burn NFT(s).
     * @param tokenId uint256 tokenId of NFT to burn.
+    * Enforces an approval check
     */
     function burn(uint256 tokenId) public {
-        _burn(tokenId);
-    }
-
-    /**
-     * @dev Destroys `tokenId`.
-     * The approval is cleared when the token is burned.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     *
-     * Emits a {Transfer} event.
-     */
-    function burn(uint256 tokenId, bool approvalCheck) public {
-        _burn(tokenId, approvalCheck);
+        _burn(tokenId , true);
     }
 
     /*
@@ -133,6 +120,14 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
         for(uint256 i; i < tokenIds.length; ++i){
             isUpgraded[tokenIds[i]] = true;
         }
+    }
+
+    /*
+    * @dev isNFTUpgraded function used to check if an NFT is upgraded.
+    * Upgraded nfts with easter egg will have a different tokenURI.
+    */
+    function isNFTUpgraded(uint256 tokenId) public view returns (bool) {
+        return isUpgraded[tokenId];
     }
 
     /**
