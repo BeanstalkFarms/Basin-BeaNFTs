@@ -29,14 +29,14 @@ describe("ERC721ABeanBasin Proxy Upgrade", function () {
         console.log("v1 Implementation Address: ", v1Address);
         console.log("v2 Implementation Address: ", v2address);
         expect(v1Address).to.not.equal(v2address);
-        expect(await erc721BeanBasinV2.baseURI()).to.equal("BASEURIV2");
+        expect(await erc721BeanBasinV2.upgradeTest()).to.equal("upgraded_contract");
     });
 
     it("Should upgrade to the correct contract", async function () {
         const { erc721BeanBasin , proxyAddress } = await loadFixture(deployAndInit);
         const ERC721ABeanBasinV2 = await ethers.getContractFactory("MockERC721ABeanBasinV2");
         const erc721BeanBasinV2 = await upgrades.upgradeProxy(proxyAddress, ERC721ABeanBasinV2);
-        expect(await erc721BeanBasinV2.baseURI()).to.equal("BASEURIV2");
+        expect(await erc721BeanBasinV2.upgradeTest()).to.equal("upgraded_contract");
     });
 
     it("Should correctly transfer ownership", async function () {
