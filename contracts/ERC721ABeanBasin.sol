@@ -121,9 +121,8 @@ contract ERC721ABeanBasin is ERC721AUpgradeable, OwnableUpgradeable, UUPSUpgrade
     }
 
     /**
-    * @dev upgradeNFTs function used to mark NFTs as upgraded.
-    * Upgraded nfts with easter egg will have a different tokenURI.
-    * @param tokenIds array of tokenIds to mark as upgraded.
+    * @dev degrade function used to degrade nfts back to original.
+    * @param tokenIds array of tokenIds to degrade.
     */
     function degradeNFTs(uint256[] calldata tokenIds) public onlyOwner {
         for(uint256 i; i < tokenIds.length; ++i){
