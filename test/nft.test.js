@@ -55,15 +55,19 @@ describe("ERC721ABeanBasin", function () {
     await expect(numberMinted).to.equal(2);
   });
 
-  // it("Should burn an NFT", async function () {
-  //   const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
-  //   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-  //   // approve first (transfer to zero address)
-  //   await erc721BeanBasin.connect(addr1).approve(ZERO_ADDRESS, 1);
-  //   // then burn
-  //   await erc721BeanBasin.connect(addr1).burn(1);
-  //   expect(await erc721BeanBasin.balanceOf(addr1.address)).to.equal(0);
-  // });
+  it("Should burn an NFT of owner", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    // burn works, even after approval ckeck because addr1 is the owner of the token being burned
+    await erc721BeanBasin.connect(addr1).burn(0);
+    expect(await erc721BeanBasin.balanceOf(addr1.address)).to.equal(0);
+    expect(await erc721BeanBasin.totalBurned()).to.equal(1);
+  });
+
+  it("Should not burn an NFT of non owner", async function () {
+    const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
+    // addr1 is not the owner of the token being burned so it should revert
+    await expect(erc721BeanBasin.connect(addr1).burn(1)).to.be.revertedWithCustomError(erc721BeanBasin,"TransferCallerNotOwnerNorApproved");
+  });
 
   it("Should upgrade NFTs with easter egg", async function () {
     const { erc721BeanBasin, owner, addr1, addr2 } = await loadFixture(deployAndInit);
