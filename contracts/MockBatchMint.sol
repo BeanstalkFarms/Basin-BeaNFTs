@@ -21,16 +21,6 @@ contract MockBatchMint is ERC721ABeanBasin{
     * instead of a sequence of {Transfer} event(s).
     * Added public variation for testing purposes
     */  
-    /**
-    * @dev __batchMintAllInit function used to mint NFT(s) to addresses.
-    * This function can only be called on initialization of the contract.
-    * 
-    * _mintERC2309 mints `quantity` tokens and transfers them to `to`.
-    *
-    * It emits only one {ConsecutiveTransfer} as defined in.
-    * [ERC2309](https://eips.ethereum.org/EIPS/eip-2309),
-    * instead of a sequence of {Transfer} event(s).
-    */  
     function ___batchMintAllInit() public{
         // addresses to mint to.
         // initialized inside the function to avoid errors on deployment.
@@ -107,8 +97,7 @@ contract MockBatchMint is ERC721ABeanBasin{
                                         0x5b45b0A5C1e3D570282bDdfe01B0465c1b332430,
                                         0xe3cd19FAbC17bA4b3D11341Aa06b6f245DE3f9A6,
                                         0xb3F3658bF332ba6c9c0Cc5bc1201cABA7ada819B,
-                                        0x69e02D001146A86d4E2995F9eCf906265aA77d85
-                                    ];
+                                        0x69e02D001146A86d4E2995F9eCf906265aA77d85];
         // check that length of addresses == length of amount.
         for(uint256 i; i < addresses.length; ++i){
             _mintERC2309(addresses[i], 1);

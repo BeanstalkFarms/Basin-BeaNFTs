@@ -6,11 +6,13 @@ require('dotenv').config();
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.20",
-  allowUnlimitedContractSize: true,
   networks: {
     sepolia: {
       url: process.env.ALCHEMY_SEPOLIA_URL  || 'https://rpc.sepolia.org',
       accounts: [process.env.PRIVATE_KEY]
+    },
+    hardhat: {
+      allowUnlimitedContractSize: true
     }
   },
   gasReporter: {
