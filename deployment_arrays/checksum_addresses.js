@@ -1,3 +1,7 @@
+// Modifies addresses so that they are checksum comliant
+// for use in the smart contract when address literals are used
+// https://github.com/ethereum/ercs/blob/master/ERCS/erc-55.md
+
 const createKeccakHash = require('keccak')
 
 function toChecksumAddress (address) {
