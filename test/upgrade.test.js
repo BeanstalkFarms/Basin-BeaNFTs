@@ -10,8 +10,6 @@ describe("ERC721ABeanBasin Proxy Upgrade", function () {
       [owner, addr1, addr2] = await ethers.getSigners();
       const erc721BeanBasin = await upgrades.deployProxy(ERC721ABeanBasin,[
           'BeaNFT Basin Collection','BEANNFT',
-          [addr1.address, addr2.address],
-          [1 , 2]
       ],
       {kind: 'uups'});
       await erc721BeanBasin.waitForDeployment();
