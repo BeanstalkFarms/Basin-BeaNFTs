@@ -98,7 +98,6 @@ contract MockBatchMint is ERC721ABeanBasin{
                                         0xe3cd19FAbC17bA4b3D11341Aa06b6f245DE3f9A6,
                                         0xb3F3658bF332ba6c9c0Cc5bc1201cABA7ada819B,
                                         0x69e02D001146A86d4E2995F9eCf906265aA77d85];
-        // check that length of addresses == length of amount.
         for(uint256 i; i < addresses.length; ++i){
             _mintERC2309(addresses[i], 1);
         }
