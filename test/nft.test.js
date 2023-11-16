@@ -7,6 +7,7 @@ describe("ERC721ABeanBasin", function () {
   async function deployAndInit() {
     const ERC721ABeanBasin = await ethers.getContractFactory("ERC721ABeanBasin");
     [owner, addr1 , addr2 , addr3] = await ethers.getSigners();
+    // first 3 whitelisted addresses 
     const whitelisted1 = "0xA92aB746eaC03E5eC31Cd3A879014a7D1e04640c"
     const whitelisted2 = "0xC19cF05F28BD4fd58E427a60EC9416d73B6d6c57"
     const whitelisted3 = "0x56A201b872B50bBdEe0021ed4D1bb36359D291ED"
@@ -58,14 +59,20 @@ describe("ERC721ABeanBasin", function () {
     await expect(numberMinted).to.equal(2);
   });
 
-  // it("Should burn an NFT of owner", async function () {
-  //   const { erc721BeanBasin, owner, whitelisted1} = await loadFixture(deployAndInit);
-  //   // burn works, even after approval ckeck because whitelisted1 is the owner of the token being burned
-  //   const whitelisted1Signer = await ethers.provider.getSigner(whitelisted1)
-  //   await erc721BeanBasin.connect(whitelisted1Signer).burn(0);
-  //   expect(await erc721BeanBasin.balanceOf(whitelisted1)).to.equal(0);
-  //   expect(await erc721BeanBasin.totalBurned()).to.equal(1);
-  // });
+  it("Should burn an NFT of owner", async function () {
+    const { erc721BeanBasin, owner, addr2 , addr1} = await loadFixture(deployAndInit);
+    // burn works, even after approval ckeck because whitelisted1 is the owner of the token being burned
+    // mint 1 nft to addr2 as the owner
+    await erc721BeanBasin.mint(addr2, 1);
+    // ensure addr2 is the owner of the new nt
+    expect(await erc721BeanBasin.ownerOf(72)).to.equal(addr2.address);
+    // connect as addr2 and burn the new token
+    await erc721BeanBasin.connect(addr2).burn(72);
+    // ensure addr2 no longer owns the token
+    expect(await erc721BeanBasin.balanceOf(addr2.address)).to.equal(0);
+    // ensure total burned is 1
+    expect(await erc721BeanBasin.totalBurned()).to.equal(1);
+  });
 
   it("Should not burn an NFT of non owner", async function () {
     const { erc721BeanBasin, addr1} = await loadFixture(deployAndInit);
@@ -106,13 +113,17 @@ describe("ERC721ABeanBasin", function () {
     expect(await erc721BeanBasin.exists(73)).to.equal(false);
   });
 
-  // it("Transfers nft correctly", async function () {
-  //   const { erc721BeanBasin, whitelisted1, addr2 } = await loadFixture(deployAndInit);
-  //   // since the caller is "from" , no need to approve
-  //                                                       // FROM         TO          TOKENID 
-  //   await erc721BeanBasin.connect(whitelisted1).safeTransferFrom(whitelisted1, addr2.address, 0);
-  //   expect(await erc721BeanBasin.ownerOf(0)).to.equal(addr2.address);
-  // });
+  it("Transfers nft correctly", async function () {
+    const { erc721BeanBasin, addr1, addr2 } = await loadFixture(deployAndInit);
+    // mint 1 nft to addr2 as the owner
+    await erc721BeanBasin.mint(addr2, 1);
+    expect(await erc721BeanBasin.ownerOf(72)).to.equal(addr2.address);
+    // transfer from addr2 to addr1
+    // since the caller is "from" , no need to approve
+                                                        // FROM         TO          TOKENID 
+    await erc721BeanBasin.connect(addr2).safeTransferFrom(addr2.address, addr1.address, 72);
+    expect(await erc721BeanBasin.ownerOf(72)).to.equal(addr1.address);
+  });
 
   it("Mints nfts correctly after deployment only by owner", async function () {
     const { erc721BeanBasin , owner, addr1, addr3 } = await loadFixture(deployAndInit);

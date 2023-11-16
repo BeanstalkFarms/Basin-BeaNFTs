@@ -21,6 +21,7 @@ module.exports = {
     enabled: (process.env.REPORT_GAS) ? true : false,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     noColors: true,
+    outputFile: "gas-report_full.txt"
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
