@@ -1,8 +1,8 @@
 const { ethers, upgrades } = require('hardhat');
 const fs = require('fs');
 
-// proxy address to upgrade
-const PROXY = "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e";
+// deployed proxy address on mainnet
+const PROXY = "0x191b7D1CfA89c9389BbF5f7F49F4B8F93eC3740F";
 
 async function main(){
                                             // your upgraded contract

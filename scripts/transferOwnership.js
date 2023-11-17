@@ -1,8 +1,9 @@
 const { ethers } = require('hardhat');
 const fs = require('fs');
 
-// deployed proxy contract address
-const PROXY = "0x2681EeDAac1013631A4463786cd259f6c60f2DC3";
+// deployed proxy contract address on mainnet
+const PROXY = "0x191b7D1CfA89c9389BbF5f7F49F4B8F93eC3740F";
+// beanft dao address
 const newOwner = ""
 
 async function main(){

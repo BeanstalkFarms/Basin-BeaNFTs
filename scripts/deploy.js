@@ -21,7 +21,7 @@ async function main () {
         implementationAddress: implementationAddress
     }
     
-    fs.writeFileSync('deployment-addresses-sepolia.json', JSON.stringify(addresses));
+    fs.writeFileSync('deployment-addresses-mainnet.json', JSON.stringify(addresses));
 }
 
 main();
