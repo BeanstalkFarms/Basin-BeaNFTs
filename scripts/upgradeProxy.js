@@ -5,6 +5,7 @@ const fs = require('fs');
 const PROXY = "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e";
 
 async function main(){
+                                            // your upgraded contract
     const ERC721ABeanBasinV2 = await ethers.getContractFactory("MockERC721ABeanBasinV2");
     await upgrades.upgradeProxy(PROXY, ERC721ABeanBasinV2);
     console.log("Upgrading BeaNFT Basin");

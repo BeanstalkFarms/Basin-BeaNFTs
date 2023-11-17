@@ -13,7 +13,11 @@ module.exports = {
     },
     hardhat: {
       allowUnlimitedContractSize: true
-    }
+    },
+    mainnet: {
+      url: process.env.ALCHEMY_MAINNET_URL,
+      accounts: [process.env.PRIVATE_KEY]
+    },
   },
   gasReporter: {
     currency: "USD",
@@ -21,7 +25,6 @@ module.exports = {
     enabled: (process.env.REPORT_GAS) ? true : false,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     noColors: true,
-    outputFile: "gas-report_full.txt"
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
