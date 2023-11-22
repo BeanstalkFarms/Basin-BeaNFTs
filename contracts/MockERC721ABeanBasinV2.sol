@@ -8,6 +8,10 @@ import './ERC721ABeanBasin.sol';
 
 contract MockERC721ABeanBasinV2 is ERC721ABeanBasin {
 
+    string public baseUri;
+
+    string public upgradedBaseUri;
+
     function upgradeTest() public pure returns (string memory){
         return "upgraded_contract";
     }

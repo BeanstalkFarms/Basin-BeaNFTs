@@ -130,6 +130,16 @@ describe("ERC721ABeanBasin Proxy Upgrade", function () {
         expect(await erc721BeanBasinV2.tokenURI(76)).to.equal("ipfs://QmSRa8EMDJqrhyHc4xcnfWadakr4c2gvUdMVNRp72dqyXe/76.json");
     });
 
+    it("Should be able to re-upgrade", async function () {
+        const { erc721BeanBasin , proxyAddress , addr1 } = await loadFixture(deployAndInit);
+        // upgrade
+        const ERC721ABeanBasinV2 = await ethers.getContractFactory("ERC721ABeanBasinV2");
+        const erc721BeanBasinV2 = await upgrades.upgradeProxy(proxyAddress, ERC721ABeanBasinV2);
+        // re-upgrade
+        const ERC721ABeanBasinV3 = await ethers.getContractFactory("MockERC721ABeanBasinV2");
+        const erc721BeanBasinV3 = await upgrades.upgradeProxy(proxyAddress, ERC721ABeanBasinV3); 
+    });
+
 
     
 
