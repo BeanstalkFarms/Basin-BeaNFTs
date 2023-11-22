@@ -7,6 +7,7 @@
 query QualifiedDeposits {
   addDeposits(
     orderBy: season
+    first: 200
     where: {token_contains: "0xbea0e11282e2bb5893bece110cf199501e872bad", bdv_gte: "1000000000", season_gte: 15410, season_lte: 16010}
   ) {
     account
