@@ -122,7 +122,11 @@ describe("ERC721ABeanBasin Proxy Upgrade", function () {
         expect(await erc721BeanBasinV2.tokenURI(72)).to.equal("ipfs://QmNk24JoLMH9SHWLG7SR9aYVTDUyC1F2pBvy5sdTjSZEoW/72.json");
         expect(await erc721BeanBasinV2.tokenURI(76)).to.equal("ipfs://QmNk24JoLMH9SHWLG7SR9aYVTDUyC1F2pBvy5sdTjSZEoW/76.json");
         // owner
+        expect(await erc721BeanBasinV2.ownerOf(0)).to.equal("0xA92aB746eaC03E5eC31Cd3A879014a7D1e04640c");
         expect(await erc721BeanBasinV2.ownerOf(72)).to.equal("0x68572eAcf9E64e6dCD6bB19f992Bdc4Eff465fd0");
+        expect(await erc721BeanBasinV2.ownerOf(73)).to.equal("0x9A00BEFfa3fc064104b71f6B7EA93bAbDC44D9dA");
+        expect(await erc721BeanBasinV2.ownerOf(74)).to.equal("0x9A00BEFfa3fc064104b71f6B7EA93bAbDC44D9dA");
+        expect(await erc721BeanBasinV2.ownerOf(75)).to.equal("0x9A00BEFfa3fc064104b71f6B7EA93bAbDC44D9dA");
         expect(await erc721BeanBasinV2.ownerOf(76)).to.equal("0x9A00BEFfa3fc064104b71f6B7EA93bAbDC44D9dA");
         // upgrade and recheck tokenuri
         await erc721BeanBasinV2.upgradeNFTs([72 , 73 , 74 , 75 , 76]);
