@@ -2,7 +2,7 @@ const { ethers, upgrades } = require('hardhat');
 const fs = require('fs');
 
 // deployed proxy address
-const PROXY = "0xe21743a5F411976957EdeF79d5a55c954eb4b605";
+const PROXY = "0x191b7D1CfA89c9389BbF5f7F49F4B8F93eC3740F";
 
 async function main(){
     const erc721BeanBasinV2 = await ethers.getContractAt("ERC721ABeanBasinV2",PROXY);
